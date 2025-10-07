@@ -1,0 +1,23 @@
+[project]
+name = "buy_vs_rent"
+version = "0.1.0"
+description = "Simulate and compare the financial outcomes of buying vs renting a property."
+readme = "README.md"
+authors = [
+  { name = "Daniel Barco", email = "daniel.barco@zhaw.ch" },
+]
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "pyyaml",
+]
+
+[tool.ruff]
+line-length = 120
+
+
+[project.optional-dependencies]
+dev = [
+
+]
