@@ -72,3 +72,72 @@ mortgage_interest_rate_annual = 0.03  # 3% annual
 
 - Python 3.6 or higher
 - No external dependencies (uses only Python standard library)
+
+# Buy vs Rent Calculator
+
+A comprehensive calculator comparing the financial outcomes of buying a house versus renting and investing the difference.
+
+## Features
+
+- Compare buying vs renting scenarios over customizable time periods
+- Track wealth accumulation including home equity and investment portfolios
+- Interactive visualizations showing costs, wealth, and investments over time
+- All parameters configurable through the UI
+
+## Web App (GitHub Pages)
+
+The calculator is available as a static web app that can be hosted on GitHub Pages using stlite.
+
+### Deployment Instructions
+
+1. Copy `index.html` and `streamlit_app.py` to your repository
+2. Enable GitHub Pages in your repository settings
+3. Select the branch and root folder containing `index.html`
+4. Access your app at `https://yourusername.github.io/your-repo-name/`
+
+### Local Development
+
+To test the web app locally:
+
+1. Start a simple HTTP server:
+   ```bash
+   python -m http.server 8000
+   ```
+
+2. Open your browser to `http://localhost:8000`
+
+## Python Scripts
+
+### Installation
+
+```bash
+pip install pyyaml matplotlib numpy
+```
+
+### Usage
+
+Run the calculator:
+```bash
+python buy_vs_rent.py
+```
+
+Generate plots:
+```bash
+python plot_buy_vs_rent.py
+```
+
+### Configuration
+
+Edit `config.yaml` to adjust default parameters:
+- Simulation period
+- House price and down payment
+- Mortgage terms and interest rates
+- Investment returns
+- Maintenance costs
+- Rent and rent increases
+
+## Data Sources
+
+- **ETF Yield:** MSCI World 10.78% (2009-2025)
+- **House Price Appreciation:** 3.73% average (2017-2025) from Swiss Federal Statistical Office
+- **Rent Increase:** 1.4% average (2005-2025) from Swiss Federal Statistical Office
