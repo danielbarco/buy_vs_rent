@@ -104,9 +104,17 @@ class BuyVsRentCalculator:
         """
         remaining_loan = self.loan_amount
         current_house_value = self.house_price
+        buy_investment_portfolio = 0  # Track investments when buy costs < rent
         wealth_progression = []
 
+        # Track current rent for comparison
+        current_monthly_rent = self.monthly_rent
+
         for month in range(1, months + 1):
+            # Update current rent (for comparison with buy costs)
+            if month > 1:
+                current_monthly_rent *= 1 + self.rent_monthly_increase
+
             # Calculate interest payment (always based on current remaining loan)
             monthly_interest = remaining_loan * self.mortgage_interest_rate_monthly
 
@@ -129,11 +137,20 @@ class BuyVsRentCalculator:
             monthly_maintenance = self.house_maintenance_monthly
             total_monthly_cost = monthly_payment + monthly_maintenance
 
+            # Calculate investment if buy costs are below rent
+            monthly_investment = 0
+            if total_monthly_cost < current_monthly_rent:
+                monthly_investment = current_monthly_rent - total_monthly_cost
+                buy_investment_portfolio += monthly_investment
+                # Apply ETF yield to the portfolio
+                buy_investment_portfolio *= 1 + self.etf_monthly_yield
+
             # Update house value (appreciation)
             current_house_value *= 1 + self.house_price_monthly_yield
 
-            # Calculate net wealth (house equity)
+            # Calculate net wealth (house equity + investment portfolio)
             equity = current_house_value - remaining_loan
+            total_wealth = equity + buy_investment_portfolio
 
             wealth_progression.append(
                 {
@@ -142,6 +159,9 @@ class BuyVsRentCalculator:
                     "house_value": current_house_value,
                     "remaining_loan": remaining_loan,
                     "equity": equity,
+                    "monthly_investment": monthly_investment,
+                    "investment_portfolio": buy_investment_portfolio,
+                    "total_wealth": total_wealth,
                 }
             )
 
@@ -154,6 +174,10 @@ class BuyVsRentCalculator:
             "wealth_progression": wealth_progression,
             "final_house_value": wealth_progression[-1]["house_value"],
             "final_equity": wealth_progression[-1]["equity"],
+            "final_investment_portfolio": wealth_progression[-1][
+                "investment_portfolio"
+            ],
+            "final_total_wealth": wealth_progression[-1]["total_wealth"],
         }
 
     def calculate_renting_scenario(self, months=240):
@@ -236,8 +260,11 @@ class BuyVsRentCalculator:
             w["monthly_cost"] for w in renting["wealth_progression"]
         )
 
-        # Calculate total invested (for renting scenario)
-        total_invested = self.down_payment + sum(
+        # Calculate total invested (for both scenarios)
+        buying_total_invested = sum(
+            w["monthly_investment"] for w in buying["wealth_progression"]
+        )
+        renting_total_invested = self.down_payment + sum(
             max(0, w["monthly_investment"]) for w in renting["wealth_progression"]
         )
 
@@ -247,14 +274,15 @@ class BuyVsRentCalculator:
             "comparison": {
                 "buying_total_cost": buying_total_cost,
                 "renting_total_cost": renting_total_cost,
-                "buying_final_wealth": buying["final_equity"],
+                "buying_final_wealth": buying["final_total_wealth"],
                 "renting_final_wealth": renting["final_portfolio_value"],
-                "wealth_difference": buying["final_equity"]
+                "wealth_difference": buying["final_total_wealth"]
                 - renting["final_portfolio_value"],
-                "total_invested": total_invested,
+                "buying_total_invested": buying_total_invested,
+                "renting_total_invested": renting_total_invested,
                 "better_option": (
                     "Buying"
-                    if buying["final_equity"] > renting["final_portfolio_value"]
+                    if buying["final_total_wealth"] > renting["final_portfolio_value"]
                     else "Renting"
                 ),
             },
@@ -274,6 +302,10 @@ def print_results(results):
     print(f"Total Initial Monthly Cost: CHF {buying['initial_monthly_cost']:,.2f}")
     print(f"\nFinal House Value: CHF {buying['final_house_value']:,.2f}")
     print(f"Final Equity (Net Wealth): CHF {buying['final_equity']:,.2f}")
+    print(
+        f"Final Investment Portfolio: CHF {buying['final_investment_portfolio']:,.2f}"
+    )
+    print(f"Final Total Wealth: CHF {buying['final_total_wealth']:,.2f}")
 
     print("\n--- RENTING SCENARIO ---")
     renting = results["renting"]
@@ -290,7 +322,8 @@ def print_results(results):
     comp = results["comparison"]
     print(f"Total Cost - Buying: CHF {comp['buying_total_cost']:,.2f}")
     print(f"Total Cost - Renting: CHF {comp['renting_total_cost']:,.2f}")
-    print(f"Total Amount Invested (Renting): CHF {comp['total_invested']:,.2f}")
+    print(f"Total Amount Invested - Buying: CHF {comp['buying_total_invested']:,.2f}")
+    print(f"Total Amount Invested - Renting: CHF {comp['renting_total_invested']:,.2f}")
     print(f"\nFinal Wealth - Buying: CHF {comp['buying_final_wealth']:,.2f}")
     print(f"Final Wealth - Renting: CHF {comp['renting_final_wealth']:,.2f}")
     print(f"\nWealth Difference: CHF {comp['wealth_difference']:,.2f}")
@@ -358,8 +391,6 @@ def main():
         mortgage_amortization_years=mortgage_amortization_years,
         rent_annual_increase=rent_annual_increase,
     )
-
-    # Run comparison
     results = calculator.compare(months=simulation_years * 12)
 
     # Print results

@@ -30,6 +30,10 @@ def plot_comparison(results, months=240):
     buying_house_value = [w["house_value"] for w in buying["wealth_progression"]]
     buying_monthly_cost = [w["monthly_cost"] for w in buying["wealth_progression"]]
     buying_remaining_loan = [w["remaining_loan"] for w in buying["wealth_progression"]]
+    buying_monthly_investment = [
+        w["monthly_investment"] for w in buying["wealth_progression"]
+    ]
+    buying_total_wealth = [w["total_wealth"] for w in buying["wealth_progression"]]
 
     # Renting scenario data
     renting_portfolio = [w["portfolio_value"] for w in renting["wealth_progression"]]
@@ -52,8 +56,8 @@ def plot_comparison(results, months=240):
     ax1 = axes[0, 0]
     ax1.plot(
         years_array,
-        np.array(buying_equity) / 1000,
-        label="Buying (Equity)",
+        np.array(buying_total_wealth) / 1000,
+        label="Buying (Total Wealth)",
         linewidth=2,
         color="blue",
     )
@@ -130,12 +134,19 @@ def plot_comparison(results, months=240):
     ax3.legend(loc="upper left")
     ax3.grid(True, alpha=0.3)
 
-    # Plot 4: Monthly Investment (Renting Scenario)
+    # Plot 4: Monthly Investment (Both Scenarios)
     ax4 = axes[1, 1]
     ax4.plot(
         years_array,
+        buying_monthly_investment,
+        label="Buying - Monthly Investment",
+        linewidth=2,
+        color="blue",
+    )
+    ax4.plot(
+        years_array,
         renting_monthly_investment,
-        label="Monthly Investment",
+        label="Renting - Monthly Investment",
         linewidth=2,
         color="green",
     )
@@ -143,7 +154,7 @@ def plot_comparison(results, months=240):
     ax4.set_xlabel("Years", fontsize=12)
     ax4.set_ylabel("Monthly Investment (CHF)", fontsize=12)
     ax4.set_title(
-        "Monthly Investment Amount (Renting Scenario)", fontsize=14, fontweight="bold"
+        "Monthly Investment Amounts (Both Scenarios)", fontsize=14, fontweight="bold"
     )
     ax4.legend(loc="upper right")
     ax4.grid(True, alpha=0.3)

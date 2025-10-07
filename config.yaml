@@ -13,11 +13,11 @@ mortgage_percent: 0.67  # 67% of house price
 mortgage_amortization_years: 15 
 
 # Investment parameters
-etf_annual_yield: 0.09  # MSCI World 10.78% 2009 - 2025 https://www.ishares.com/ch/privatkunden/de/produkte/251882/ishares-msci-world-ucits-etf-acc-fund
+etf_annual_yield: 0.1078  # MSCI World 10.78% 2009 - 2025 https://www.ishares.com/ch/privatkunden/de/produkte/251882/ishares-msci-world-ucits-etf-acc-fund
 house_price_annual_yield: 0.0373  # 3.73% average from 2017 - 2025 https://www.bfs.admin.ch/bfs/de/home/statistiken/preise/immobilienpreise.assetdetail.36024338.html
 # Maintenance parameters
 house_maintenance_percent_annual: 0.01  # 1.0%
 
 # Rent parameters
-monthly_rent: 4000  # CHF 2,075 for a 5 bedroom flat in Winterthur https://www.bfs.admin.ch/bfs/de/home/statistiken/bau-wohnungswesen/wohnungen.assetdetail.34727754.html
+monthly_rent: 2500  # CHF 2,075 for a 5 bedroom flat in Winterthur https://www.bfs.admin.ch/bfs/de/home/statistiken/bau-wohnungswesen/wohnungen.assetdetail.34727754.html
 rent_annual_increase: 0.014  # 1.4% average from 2005 - 2025 https://www.bfs.admin.ch/bfs/de/home/statistiken/preise/mieten/index.assetdetail.36201025.html
